@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:voucomprei/helpers/database_helper.dart';
+import 'package:voucomprei/models/item_model.dart';
 
 class AddItemPage extends StatefulWidget {
+  final Function updateItemList;
+  final Item item;
+
+  AddItemPage({this.updateItemList, this.item});
+
   @override
   _AddItemPageState createState() => _AddItemPageState();
 }
@@ -17,15 +24,40 @@ class _AddItemPageState extends State<AddItemPage> {
     'Litros (L)'
   ];
 
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.item != null) {
+      _description = widget.item.description;
+      _amount = widget.item.amount;
+      _unity = widget.item.unity;
+    }
+  }
+
+  _delete() {
+    DatabaseHelper.instance.deleteItem(widget.item.id);
+    widget.updateItemList();
+    Navigator.pop(context);
+  }
+
   _submit() {
-    if(_formKey.currentState.validate()){
+    if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       print('$_description, $_amount, $_unity');
 
-      // inserir o item na base
+      Item item =
+          Item(description: _description, amount: _amount, unity: _unity);
+      if (widget.item == null) {
+        item.status = 0;
+        DatabaseHelper.instance.insertItem(item);
+      } else {
+        item.id = widget.item.id;
+        item.status = widget.item.status;
+        DatabaseHelper.instance.updateItem(item);
+      }
 
-      // atualizar o item
-
+      widget.updateItemList();
       Navigator.pop(context);
     }
   }
@@ -52,7 +84,7 @@ class _AddItemPageState extends State<AddItemPage> {
               height: 20.0,
             ),
             Text(
-              'Adicionar Item',
+              widget.item == null ? 'Adicionar Item' : 'Editar Item',
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 30.0,
@@ -139,12 +171,30 @@ class _AddItemPageState extends State<AddItemPage> {
                         borderRadius: BorderRadius.circular(30.0)),
                     child: FlatButton(
                       child: Text(
-                        'Adicionar',
+                        widget.item == null ? 'Adicionar' : 'Editar',
                         style: TextStyle(color: Colors.white, fontSize: 15.0),
                       ),
                       onPressed: _submit,
                     ),
-                  )
+                  ),
+                  widget.item != null
+                      ? Container(
+                          margin: EdgeInsets.symmetric(vertical: 15.0),
+                          height: 50.0,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(30.0)),
+                          child: FlatButton(
+                            child: Text(
+                              'Apagar',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 15.0),
+                            ),
+                            onPressed: _delete,
+                          ),
+                        )
+                      : SizedBox.shrink(),
                 ],
               ),
             )
