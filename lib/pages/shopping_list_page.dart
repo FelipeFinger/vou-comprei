@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:voucomprei/pages/add_item_page.dart';
 
-class ShoppingListScreen extends StatefulWidget {
+class ShoppingListPage extends StatefulWidget {
   @override
-  _ShoppingListScreenState createState() => _ShoppingListScreenState();
+  _ShoppingListPageState createState() => _ShoppingListPageState();
 }
 
-class _ShoppingListScreenState extends State<ShoppingListScreen> {
+class _ShoppingListPageState extends State<ShoppingListPage> {
   Widget _buildItem(int index) {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -31,7 +32,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(Icons.add),
-        onPressed: () => print('Tela de add itens'),
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => AddItemPage(),
+          ),
+        ),
       ),
       body: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 50.0),

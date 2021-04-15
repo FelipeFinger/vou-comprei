@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voucomprei/pages/ShoppingListScreen.dart';
+import 'package:voucomprei/pages/shopping_list_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ShoppingListScreen(),
+      home: ShoppingListPage(),
     );
   }
 }
